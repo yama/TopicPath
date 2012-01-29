@@ -136,7 +136,7 @@ class TopicPath
 			    && !in_array($doc['id'],$ignoreIds))
 			{
 				// Add topic
-				$topics[] = &$doc;
+				$topics[] = $doc;
 			}
 			
 			// Check stop conditions
@@ -161,7 +161,7 @@ class TopicPath
 		$homeTopic = $modx->getPageInfo($homeId,0,'id,parent,pagetitle,longtitle,menutitle,description,published,hidemenu');
 		if($showHomeTopic && $homeId != $modx->documentIdentifier && !empty($homeTopic))
 		{
-			$topics[] = &$homeTopic;
+			$topics[] = $homeTopic;
 		}
 		
 		// Process each topic ----------------------------------------------------------
