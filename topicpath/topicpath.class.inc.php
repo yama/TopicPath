@@ -12,23 +12,23 @@ class TopicPath
 		
 		if(!isset($theme))                $theme             = 'raw';
 		if(!isset($pathThruUnPub))        $pathThruUnPub     = 1;
-		if(!isset($respectHidemenu))      $respectHidemenu   = 1;
+		if(!isset($showInMenuOnly))       $showInMenuOnly    = 1;
 		if(!isset($showCurrentTopic))     $showCurrentTopic  = 1;
 		if(!isset($currentAsLink))        $currentAsLink     = 0;
-		if(!isset($linkTextField))        $linkTextField     = 'menutitle,pagetitle,longtitle';
-		if(!isset($linkDescField))        $linkDescField     = 'description,longtitle,pagetitle,menutitle';
+		if(!isset($titleField))           $titleField     = 'menutitle,pagetitle';
+		if(!isset($descField))            $descField     = 'description,longtitle,pagetitle';
 		if(!isset($showTopicsAsLinks))    $showTopicsAsLinks = 1;
 		if(!isset($topicGap))             $topicGap          = '...';
 		if(!isset($showHomeTopic))        $showHomeTopic     = 1;
 		if(!isset($homeId))               $homeId            = $modx->config['site_start'];
-		if(!isset($homeTopicTitle) )      $homeTopicTitle    = '';
+		if(!isset($homeTopicTitle))       $homeTopicTitle    = '';
 		if(!isset($homeTopicDesc))        $homeTopicDesc     = '';
 		if(!isset($showTopicsAtHome))     $showTopicsAtHome  = 0;
 		if(!isset($hideOn))               $hideOn            = '';
 		if(!isset($hideUnder))            $hideUnder         = '';
 		if(!isset($stopIds))              $stopIds           = '';
 		if(!isset($ignoreIds))            $ignoreids         = '';
-		if(!isset($maxTopics))            $maxTopics         = 100;
+		if(!isset($display))              $display         = 100;
 		
 		if(isset($templateSet)) $theme = $templateSet;
 		switch(strtolower($theme))
@@ -44,6 +44,7 @@ class TopicPath
 				break;
 			case 'raw':
 			case 'defaultstring':
+			case 'default':
 				$tpl['outer']             = '<span class="topicpath">[+topics+]</span>';
 				$tpl['first_topic_inner'] = '<span class="first">[+topic+]</span>';
 				$tpl['last_topic_inner']  = '<span class="last">[+topic+]</span>';
@@ -95,8 +96,8 @@ class TopicPath
 		
 		// Put certain parameters in arrays
 		$stopIds       = $this->convert_array($stopIds);
-		$linkTextField = $this->convert_array($linkTextField);
-		$linkDescField = $this->convert_array($linkDescField);
+		$titleField = $this->convert_array($titleField);
+		$descField = $this->convert_array($descField);
 		$ignoreIds     = $this->convert_array($ignoreIds);
 		
 		/* $topics
@@ -106,7 +107,7 @@ class TopicPath
 		$topics = array();
 		$parent = &$modx->documentObject['parent'];
 		$output = '';
-		$maxTopics += ($showCurrentTopic) ? 1 : 0;
+		$display += ($showCurrentTopic) ? 1 : 0;
 		
 		// Replace || in snippet parameters that accept them with =
 		$topicGap = str_replace('||','=',$topicGap);
@@ -140,10 +141,10 @@ class TopicPath
 			
 			// Check stop conditions
 			if (
-			in_array($doc['id'],$stopIds) ||  // Is one of the stop IDs
-			!$doc['parent'] || // At root
-			( !$doc['published'] && !$pathThruUnPub ) // Unpublished
-			)
+				in_array($doc['id'],$stopIds)                 // Is one of the stop IDs
+				 || !$doc['parent']                           // At root
+				 || ( !$doc['published'] && !$pathThruUnPub ) // Unpublished
+				)
 			{
 				// Halt making topics
 				break;
@@ -169,7 +170,7 @@ class TopicPath
 		foreach ($topics as $row )
 		{
 			// Skip if we've exceeded our topic limit but we're waiting to get to home
-			if (count($pretplTopics) > $maxTopics && $row['id'] != $homeId )
+			if (count($pretplTopics) > $display && $row['id'] != $homeId )
 			{
 				continue;
 			}
@@ -185,11 +186,11 @@ class TopicPath
 			else
 			// Determine appropriate span/link text: home link not specified
 			{
-				for ($i = 0; !$text && $i < count($linkTextField); $i++)
+				for ($i = 0; !$text && $i < count($titleField); $i++)
 				{
-					if ( $row[$linkTextField[$i]] )
+					if ( $row[$titleField[$i]] )
 					{
-						$text = $row[$linkTextField[$i]];
+						$text = $row[$titleField[$i]];
 					}
 				}
 			}
@@ -213,11 +214,11 @@ class TopicPath
 				else
 				// Determine appropriate title for link: home link not specified
 				{
-					for ($i = 0; !$title && $i < count($linkDescField); $i++)
+					for ($i = 0; !$title && $i < count($descField); $i++)
 					{
-						if ($row[$linkDescField[$i]] )
+						if ($row[$descField[$i]] )
 						{
-							$title = htmlspecialchars($row[$linkDescField[$i]]);
+							$title = htmlspecialchars($row[$descField[$i]]);
 						}
 					}
 				}
@@ -231,9 +232,9 @@ class TopicPath
 			}
 			
 			// If we have hit the topic limit
-			if ( count($pretplTopics) == $maxTopics )
+			if ( count($pretplTopics) == $display )
 			{
-				if ( count($topics) > ($maxTopics + (($showHomeTopic) ? 1 : 0)) )
+				if ( count($topics) > ($display + (($showHomeTopic) ? 1 : 0)) )
 				{
 					// Add gap
 					$pretplTopics[] = '<span class="hidden">' . $topicGap . '</span>';
