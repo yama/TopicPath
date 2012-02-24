@@ -27,7 +27,7 @@ class TopicPath
 		if(!isset($hideOn))               $hideOn            = '';
 		if(!isset($hideUnder))            $hideUnder         = '';
 		if(!isset($stopIds))              $stopIds           = '';
-		if(!isset($ignoreIds))            $ignoreids         = '';
+		if(!isset($ignoreIds))            $ignoreIds         = '';
 		if(!isset($display))              $display         = 100;
 		
 		if(isset($templateSet)) $theme = $templateSet;
@@ -37,8 +37,8 @@ class TopicPath
 			case 'li':
 			case 'defaultlist':
 				$tpl['outer']             = '<ul class="topicpath">[+topics+]</ul>';
-				$tpl['first_topic_inner'] = '<span class="first">[+topic+]</span>';
-				$tpl['last_topic_inner']  = '<span class="last">[+topic+]</span>';
+				$tpl['first_topic_outer'] = '<span class="first">[+topic+]</span>';
+				$tpl['last_topic_outer']  = '<span class="last">[+topic+]</span>';
 				$tpl['topic']             = '<li>[+topic+]</li>';
 				$tpl['separator']         = '';
 				break;
@@ -46,8 +46,8 @@ class TopicPath
 			case 'defaultstring':
 			case 'default':
 				$tpl['outer']             = '<span class="topicpath">[+topics+]</span>';
-				$tpl['first_topic_inner'] = '<span class="first">[+topic+]</span>';
-				$tpl['last_topic_inner']  = '<span class="last">[+topic+]</span>';
+				$tpl['first_topic_outer'] = '<span class="first">[+topic+]</span>';
+				$tpl['last_topic_outer']  = '<span class="last">[+topic+]</span>';
 				$tpl['topic']             = '[+topic+]';
 				$tpl['separator']         = ' &raquo; ';
 				break;
@@ -56,8 +56,8 @@ class TopicPath
 		
 		if(isset($tplOuter))           $tpl['outer']             = $tplOuter;
 		if(isset($tplTopic))           $tpl['topic']             = $tplTopic;
-		if(isset($tplFirstTopicInner)) $tpl['first_topic_inner'] = $tplFirstTopicInner;
-		if(isset($tplLastTopicInner))  $tpl['last_topic_inner']  = $tplLastTopicInner;
+		if(isset($tplFirstTopicOuter)) $tpl['first_topic_outer'] = $tplFirstTopicOuter;
+		if(isset($tplLastTopicOuter))  $tpl['last_topic_outer']  = $tplLastTopicOuter;
 		if(isset($tplSeparator))       $tpl['separator']         = $tplSeparator;
 		
 		// Return blank if necessary: on home page
@@ -146,15 +146,12 @@ class TopicPath
 				 || ( !$doc['published'] && !$pathThruUnPub ) // Unpublished
 				)
 			{
-				// Halt making topics
-				break;
+				break; // Halt making topics
 			}
 			
-			// Reset parent
-			$parent = $doc['parent'];
+			$parent = $doc['parent']; // Reset parent
 			
-			// Increment loop safety
-			$loopSafety++;
+			$loopSafety++; // Increment loop safety
 		}
 		
 		// Home topic ------------------------------------------------------------------
@@ -253,10 +250,10 @@ class TopicPath
 		
 		// Wrap first/last spans
 		
-		$pretplTopics[0] = str_replace('[+topic+]',$pretplTopics[0],$tpl['first_topic_inner']);
+		$pretplTopics[0] = str_replace('[+topic+]',$pretplTopics[0],$tpl['first_topic_outer']);
 		
 		$last = count($pretplTopics)-1;
-		$pretplTopics[$last] = str_replace('[+topic+]',$pretplTopics[$last],$tpl['last_topic_inner']);
+		$pretplTopics[$last] = str_replace('[+topic+]',$pretplTopics[$last],$tpl['last_topic_outer']);
 		
 		// Insert topics into topic template
 		$processedTopics = array();
