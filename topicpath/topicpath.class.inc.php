@@ -24,11 +24,11 @@ class TopicPath
 		
 		$this->theme            = $theme;
 		$this->tpl = array();
-		if(isset($tplOuter))        $this->tpl['outer']         = $tplOuter;
-		if(isset($tplHomeTopic))    $this->tpl['home_topic']    = $tplHomeTopic;
-		if(isset($tplCurrentTopic)) $this->tpl['current_topic'] = $tplCurrentTopic;
-		if(isset($tplOtherTopic))   $this->tpl['other_topic']   = $tplOtherTopic;
-		if(isset($tplSeparator))    $this->tpl['separator']     = $tplSeparator;
+		if(isset($tplOuter))        $this->tpl['Outer']        = $tplOuter;
+		if(isset($tplHomeTopic))    $this->tpl['HomeTopic']    = $tplHomeTopic;
+		if(isset($tplCurrentTopic)) $this->tpl['CurrentTopic'] = $tplCurrentTopic;
+		if(isset($tplOtherTopic))   $this->tpl['OtherTopic']   = $tplOtherTopic;
+		if(isset($tplSeparator))    $this->tpl['Separator']    = $tplSeparator;
 	}
 	
 	function getTopicPath()
@@ -45,18 +45,18 @@ class TopicPath
 		{
 			case 'list':
 			case 'li':
-				$tpl['outer']         = '<ul class="topicpath">[+topics+]</ul>';
-				$tpl['home_topic']    = '<li class="home"><a href="[+href+]" title="[+title+]">[+title+]</a></li>';
-				$tpl['current_topic'] = '<li class="current">[+title+]</li>';
-				$tpl['other_topic']   = '<li><a href="[+href+]" title="[+title+]">[+title+]</a></li>';
-				$tpl['separator']     = "\n";
+				$tpl['Outer']        = '<ul class="topicpath">[+topics+]</ul>';
+				$tpl['HomeTopic']    = '<li class="home"><a href="[+href+]">[+title+]</a></li>';
+				$tpl['CurrentTopic'] = '<li class="current">[+title+]</li>';
+				$tpl['OtherTopic']   = '<li><a href="[+href+]">[+title+]</a></li>';
+				$tpl['Separator']    = "\n";
 				break;
 			default:
-				$tpl['outer']          = '[+topics+]';
-				$tpl['home_topic']     = '<a href="[+href+]" class="home" title="[+title+]">[+title+]</a>';
-				$tpl['current_topic']  = '[+title+]';
-				$tpl['other_topic']    = '<a href="[+href+]" title="[+title+]">[+title+]</a>';
-				$tpl['separator']      = ' &raquo; ';
+				$tpl['Outer']        = '[+topics+]';
+				$tpl['HomeTopic']    = '<a href="[+href+]" class="home">[+title+]</a>';
+				$tpl['CurrentTopic'] = '[+title+]';
+				$tpl['OtherTopic']   = '<a href="[+href+]">[+title+]</a>';
+				$tpl['Separator']    = ' &raquo; ';
 		}
 		$tpl = array_merge($tpl, $this->tpl);
 		
@@ -67,8 +67,8 @@ class TopicPath
 		
 		if(0<count($topics))
 		{
-			$rs = join($tpl['separator'],$topics);
-			$rs = $modx->parsePlaceholder($tpl['outer'],array('topics'=>$rs));
+			$rs = join($tpl['Separator'],$topics);
+			$rs = $modx->parsePlaceholder($tpl['Outer'],array('topics'=>$rs));
 		}
 		else $rs = '';
 		
@@ -171,9 +171,9 @@ class TopicPath
 			$ph['title'] = htmlspecialchars($ph['title'], ENT_QUOTES, $modx->config['modx_charset']);
 			$ph['desc']  = htmlspecialchars($ph['desc'], ENT_QUOTES, $modx->config['modx_charset']);
 			
-			if($i===$c-1)  $topics[$i] = $modx->parsePlaceholder($tpl['current_topic'],$ph);
-			elseif($i===0) $topics[$i] = $modx->parsePlaceholder($tpl['home_topic'],$ph);
-			else           $topics[$i] = $modx->parsePlaceholder($tpl['other_topic'],$ph);
+			if($i===$c-1)  $topics[$i] = $modx->parsePlaceholder($tpl['CurrentTopic'],$ph);
+			elseif($i===0) $topics[$i] = $modx->parsePlaceholder($tpl['HomeTopic'],$ph);
+			else           $topics[$i] = $modx->parsePlaceholder($tpl['OtherTopic'],$ph);
 			
 			$i++;
 		}
